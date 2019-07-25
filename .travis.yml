@@ -1,0 +1,26 @@
+os: linux
+language: python
+python:
+- '3.5'
+cache: pip
+addons:
+  apt:
+    packages:
+    - python3.5
+  homebrew:
+    packages:
+    - squashfs
+    update: true
+sudo: required
+matrix:
+  include:
+  - python: '3.5'
+before_install:
+# fix complaint by travis
+- sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6B05F25D762E3157
+- sudo apt-get install -y libarchive-dev squashfs-tools
+- sudo chmod u+x .travis/*.sh
+- "/bin/bash .travis/setup.sh"
+install: pip install --upgrade pip
+script: 
+  - "/bin/bash .travis/build-and-publish.sh kepler"

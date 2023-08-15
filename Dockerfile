@@ -26,7 +26,7 @@ RUN wget https://code.kepler-project.org/code/kepler/releases/installers/2.4/kep
 RUN tar -C /opt/kepler -xvf /opt/kepler/kepler-2.4-linux.tar.gz
 
 RUN cp /tmp/configuration.xml /opt/kepler/kepler-2.4/module-manager-2.4.0/resources/configurations/configuration.xml
- 
+
 RUN cp /tmp/core_configuration.xml /opt/kepler/kepler-2.4/core-2.4.0/resources/configurations/configuration.xml
 
 RUN cp /tmp/common_configuration.xml /opt/kepler/kepler-2.4/common-2.4.0/resources/configurations/configuration.xml
@@ -38,13 +38,13 @@ RUN ln -s /opt/kepler/kepler-2.4/kepler.sh /usr/bin/kepler
 RUN rm /opt/kepler/*.gz
 
 RUN rm -f /home/kepler/.kepler
- 
+
 RUN mkdir -p /root/.ssh/ 
 RUN touch /root/.ssh/config
 RUN chmod 0644 /root/.ssh/config
 
 RUN git clone https://bitbucket.org/coesra/kepler_archives.git /mnt/kepler_archives
- 
+
 WORKDIR /mnt/kepler_archives/files
 
 RUN tar -xvf kepler_coesra_builder.tar.gz
@@ -58,10 +58,15 @@ RUN chown -R kepler:kepler /mnt/kepler_archives/files/
 
 RUN cp /mnt/kepler_archives/files/kepler_coesra_utility.tar.gz /opt/kepler/kepler-2.4
 
+# Some missing modules i.e. coesra-tern-2.4.0, nimrodk-2.4.0, etc
+# TODO: Relocate it to https://bitbucket.org/coesra/kepler_archives.git?
+COPY  modules.tar.gz /opt/kepler/kepler-2.4
+
 RUN chown -R kepler:kepler /opt/kepler/kepler-2.4
 
 WORKDIR /opt/kepler/kepler-2.4/
 RUN tar -xvf kepler_coesra_utility.tar.gz
+RUN tar -xvf modules.tar.gz
 
 RUN chown -R kepler:kepler /opt/kepler/kepler-2.4/
 
@@ -104,7 +109,7 @@ RUN yum install -y libpng-devel \
     geos-devel \
     mesa-libGL \
     mesa-libGL-devel \
-    mesa-libGLU-devel \
+    mesa-libGLU-devel
 
 RUN yum install -y R R-devel openssl openssl-devel
 
